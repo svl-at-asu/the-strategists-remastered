@@ -1,6 +1,6 @@
 import { Col, Row } from 'antd';
-import CytoscapeProvider from '@game/providers/cytoscapeProvider';
 import panelsConfig from '@game/hooks/panels';
+import CytoscapeProvider from '@game/providers/cytoscapeProvider';
 import GameWrapper from './GameWrapper';
 import MapPanel from './MapPanel';
 import PlayerPanel from './PlayerPanel';
@@ -29,12 +29,14 @@ function GamePage() {
             <MapPanel />
           </CytoscapeProvider>
         </Col>
-        {showRightPanel && (<Col
-          className="strategists-dashboard__panel strategists-glossy"
-          flex="25%"
-        >
-          <RightPanel />
-        </Col>)}
+        {showRightPanel && (
+          <Col
+            className="strategists-dashboard__panel strategists-glossy"
+            flex="25%"
+          >
+            <RightPanel />
+          </Col>
+        )}
       </Row>
       <WinnerConfettiBackdrop />
       <WinModal />
