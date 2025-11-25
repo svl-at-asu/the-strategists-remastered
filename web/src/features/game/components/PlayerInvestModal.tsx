@@ -43,23 +43,29 @@ const prepareSliderMarks = (strategy: InvestmentStrategy): SliderMarks => {
   return marks;
 };
 
+type PlayerInvestModalVariant = 'modal' | 'inline';
+
 interface PlayerInvestModalProps {
   open: boolean;
   onCancel: () => void;
+  variant?: PlayerInvestModalVariant;
 }
 
 function PlayerInvestModal({
   open,
   onCancel,
+  variant = 'modal',
 }: Partial<PlayerInvestModalProps>) {
   const { gameCode, player } = useLogin();
   const { lands } = useGame();
   const { errorNotification } = useNotifications();
   const [ownership, setOwnership] = useState(0);
   const [investing, setInvesting] = useState(false);
+  const isInline = variant === 'inline';
+  const shouldRender = isInline ? true : open;
 
   // Validating props
-  if (!open || !gameCode || !player) {
+  if (!shouldRender || !gameCode || !player) {
     return null;
   }
 
@@ -79,7 +85,7 @@ function PlayerInvestModal({
   const onModalCancel = () => {
     setOwnership(0);
     setInvesting(false);
-    if (onCancel) onCancel();
+    if (!isInline && onCancel) onCancel();
   };
 
   const onInvest = async () => {
@@ -106,42 +112,8 @@ function PlayerInvestModal({
     }
   };
 
-  return (
-    <Modal
-      className="strategists-actions__modal"
-      title="Investment Strategy"
-      open={!!open}
-      onCancel={onModalCancel}
-      footer={
-        <Row justify="space-between" wrap={false}>
-          <Space>
-            {strategy.maxOfferableOwnership !== strategy.availableOwnership ? (
-              <>
-                <ExclamationCircleOutlined />
-                <span>
-                  Offer capped at {strategy.maxOfferableOwnership}% due to low
-                  cash!
-                </span>
-              </>
-            ) : (
-              ''
-            )}
-          </Space>
-          <Space>
-            <Button onClick={onModalCancel}>Cancel</Button>
-            <Button
-              type="primary"
-              disabled={!strategy.feasible || investing}
-              icon={<RiseOutlined />}
-              onClick={onInvest}
-              loading={investing}
-            >
-              Invest
-            </Button>
-          </Space>
-        </Row>
-      }
-    >
+  const content = (
+    <>
       <LandStats land={land} />
       <Row>
         <Col span={12}>
@@ -219,6 +191,84 @@ function PlayerInvestModal({
           },
         ]}
       />
+    </>
+  );
+
+  if (isInline) {
+    return (
+      <section className="strategists-actions strategists-actions__inline">
+        <header className="strategists-actions__inline__header">
+          <h3>Investment Strategy</h3>
+        </header>
+        {content}
+        <Row justify="space-between" wrap={false}>
+          <Space>
+            {strategy.maxOfferableOwnership !== strategy.availableOwnership ? (
+              <>
+                <ExclamationCircleOutlined />
+                <span>
+                  Offer capped at {strategy.maxOfferableOwnership}% due to low
+                  cash!
+                </span>
+              </>
+            ) : (
+              ''
+            )}
+          </Space>
+          <Space>
+            <Button onClick={onModalCancel}>Cancel</Button>
+            <Button
+              type="primary"
+              disabled={!strategy.feasible || investing}
+              icon={<RiseOutlined />}
+              onClick={onInvest}
+              loading={investing}
+            >
+              Invest
+            </Button>
+          </Space>
+        </Row>
+      </section>
+    );
+  }
+
+  return (
+    <Modal
+      className="strategists-actions__modal"
+      title="Investment Strategy"
+      open={!!open}
+      onCancel={onModalCancel}
+      footer={
+        <Row justify="space-between" wrap={false}>
+          <Space>
+            {strategy.maxOfferableOwnership !== strategy.availableOwnership ? (
+              <>
+                <ExclamationCircleOutlined />
+                <span>
+                  Offer capped at {strategy.maxOfferableOwnership}% due to low
+                  cash!
+                </span>
+              </>
+            ) : (
+              ''
+            )}
+          </Space>
+          <Space>
+            <Button onClick={onModalCancel}>Cancel</Button>
+            <Button
+              type="primary"
+              disabled={!strategy.feasible || investing}
+              icon={<RiseOutlined />}
+              onClick={onInvest}
+              loading={investing}
+            >
+              Invest
+            </Button>
+          </Space>
+        </Row>
+      }
+    >
+      {content}
     </Modal>
   );
 }

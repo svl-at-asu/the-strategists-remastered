@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons';
 import axios from 'axios';
 import useNotifications from '@shared/hooks/useNotifications';
+import panelsConfig from '@game/hooks/panels';
 import useGame from '@game/hooks/useGame';
 import InvestmentStrategy from '@game/utils/InvestmentStrategy';
 import useLogin from '@login/hooks/useLogin';
@@ -21,6 +22,9 @@ function PlayerActionsPanel() {
   const { errorNotification } = useNotifications();
   const [showModal, setShowModal] = useState(false);
   const [skipping, setSkipping] = useState(false);
+  const showPlayerInvestModal =
+    panelsConfig.PlayerInvestModal.shown &&
+    panelsConfig.PlayerInvestModal.placement === 'default';
 
   // Determining player's current land
   const land = player ? lands[player.index] : undefined;
@@ -60,10 +64,12 @@ function PlayerActionsPanel() {
 
   return (
     <>
-      <PlayerInvestModal
-        open={showModal}
-        onCancel={() => setShowModal(false)}
-      />
+      {showPlayerInvestModal && (
+        <PlayerInvestModal
+          open={showModal}
+          onCancel={() => setShowModal(false)}
+        />
+      )}
       <div className="strategists-actions">
         {player?.state === 'BANKRUPT' ? (
           <Button disabled size="large" type="primary" icon={<AuditOutlined />}>
