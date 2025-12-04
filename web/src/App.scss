@@ -153,6 +153,7 @@ h1.strategists-logo {
 
 .strategists-dashboard {
   height: 100vh;
+  overflow: hidden;
 
   // Forcing ant-col to respect parent's height constraints
   .ant-col {
@@ -163,6 +164,8 @@ h1.strategists-logo {
     display: flex;
     flex-direction: column;
     flex: 1 1 auto 1;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     .ant-tabs {
       flex-basis: 100%;
@@ -183,6 +186,29 @@ h1.strategists-logo {
       flex-direction: column;
       flex: 1 auto;
     }
+  }
+}
+
+.strategists-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ant-lg-padding);
+  margin-top: var(--ant-lg-padding);
+
+  &__block {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--ant-lg-padding) / 2);
+  }
+
+  h3 {
+    margin: 0;
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 }
 
@@ -237,23 +263,25 @@ h1.strategists-logo {
   }
 
   &__inline {
-    padding: var(--ant-lg-padding);
+    box-sizing: border-box;
+    padding: clamp(10px, 1.6vw, 18px);
     width: 100%;
-    max-width: 50%;
-    min-width: 260px;
-    max-height: 50vh;
+    max-width: 100%;
+    min-width: 240px;
+    max-height: 100%;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: var(--base-unit-size);
-    font-size: 1.2rem;
+    gap: clamp(8px, 1vw, 14px);
+    font-size: 1rem;
+    line-height: 1.4;
     overflow-y: auto;
 
     &__header {
       margin-bottom: var(--base-unit-size);
 
       h3 {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
         margin: 0;
       }
     }
@@ -272,13 +300,169 @@ h1.strategists-logo {
     }
 
     .ant-statistic-title {
-      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.95rem;
     }
 
     .ant-statistic-content-value {
-      font-size: 1.8rem;
+      font-size: 1.35rem;
+    }
+
+    &__block {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(6px, 0.8vw, 12px);
+      padding: clamp(10px, 1.2vw, 14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      width: 100%;
+
+      h4 {
+        margin: 0;
+        font-size: 1.05rem;
+      }
+    }
+
+    &__empty {
+      padding: clamp(10px, 1.4vw, 16px);
+      text-align: center;
+      color: var(--muted-text-color, #8c8c8c);
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+    }
+
+    .ant-card {
+      margin: 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .ant-card-body {
+      padding: clamp(8px, 1vw, 12px);
+    }
+
+    .ant-collapse-header {
+      padding: clamp(6px, 0.8vw, 10px) 0 !important;
+    }
+
+    .ant-collapse-content-box {
+      padding: 0 !important;
+    }
+
+    // Compact icons/typography for inline widgets
+    .anticon {
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .ant-statistic-content {
+      line-height: 1.1;
+    }
+
+    // Slider sizing
+    .strategists-actions__modal__slider-card {
+      width: 100%;
+      box-sizing: border-box;
+      padding: clamp(8px, 1vw, 12px);
+      margin: 0;
+
+      .ant-slider {
+        padding: 6px 0;
+      }
+
+      .ant-slider-rail,
+      .ant-slider-track {
+        height: 4px;
+      }
+
+      .ant-slider-handle {
+        width: 14px;
+        height: 14px;
+        margin-top: -5px;
+      }
+
+      .ant-slider-dot {
+        width: 8px;
+        height: 8px;
+        margin-top: -2px;
+      }
+
+      .ant-slider-mark-text {
+        font-size: 0.85rem;
+        line-height: 1.1;
+      }
+    }
+
+    // Collapse and text spacing
+    .ant-collapse {
+      font-size: 0.95rem;
+
+      .ant-collapse-arrow {
+        font-size: 14px;
+      }
+    }
+
+    .strategists-tab-label,
+    .strategists-inline-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
+    .strategists-inline-label {
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .strategists-chart-help__icon {
+      cursor: pointer;
+    }
+
+    .strategists-inline-actions {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
+
+      .ant-space {
+        flex: 1;
+        min-width: 140px;
+        justify-content: flex-end;
+      }
+
+      button {
+        min-width: 110px;
+      }
+    }
+
+    // Ensure rows/cols don't add horizontal overflow
+    .ant-row {
+      width: 100%;
+      margin: 0;
+    }
+
+    .ant-col {
+      padding: 0;
     }
   }
+}
+
+.strategists-chart-help__popover {
+  max-width: 260px;
+}
+
+.strategists-analysis-panel {
+  width: 100%;
+  overflow-x: hidden;
+  padding-right: clamp(8px, 1vw, 12px);
+  box-sizing: border-box;
 }
 
 // ----- ACTIVITY COMPONENT'S CSS DEFINED BELOW ----- //

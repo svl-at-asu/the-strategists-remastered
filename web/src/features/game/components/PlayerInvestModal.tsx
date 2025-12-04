@@ -65,21 +65,23 @@ function PlayerInvestModal({
   const shouldRender = isInline ? true : open;
 
   // Validating props
-  if (!shouldRender || !gameCode || !player) {
+  if (!shouldRender) {
     return null;
   }
 
-  // Closing the modal if player doesn't have the turn
-  if (!player.turn) {
+  const land = player ? lands[player.index] : undefined;
+
+  // For modal variant, ensure required data exists and close if it's not player's turn
+  if (!isInline && (!gameCode || !player || !land || !player.turn)) {
     if (onCancel) onCancel();
     return null;
   }
 
-  // Current land of the player
-  const land = lands[player.index];
-
   // Setting up investment strategy
-  const strategy = new InvestmentStrategy(player, land, ownership);
+  const strategy =
+    gameCode && player && land
+      ? new InvestmentStrategy(player, land, ownership)
+      : null;
 
   // Ensuring that if model closes, we are resetting states
   const onModalCancel = () => {
@@ -89,6 +91,9 @@ function PlayerInvestModal({
   };
 
   const onInvest = async () => {
+    if (!strategy || !player || !land) {
+      return;
+    }
     setInvesting(true);
     try {
       // Investing in the land
@@ -112,87 +117,92 @@ function PlayerInvestModal({
     }
   };
 
-  const content = (
-    <>
-      <LandStats land={land} />
-      <Row>
-        <Col span={12}>
-          <Card variant="borderless">
-            <Statistic
-              title={
-                <Space>
-                  <PieChartOutlined />
-                  Proposed Ownership
-                </Space>
-              }
-              value={ownership}
-              precision={0}
-              suffix={<PercentageOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col span={12}>
-          <Card variant="borderless">
-            <Statistic
-              title={
-                <Space>
-                  <WalletOutlined />
-                  Investment Cost
-                </Space>
-              }
-              value={strategy.cost}
-              precision={2}
-              prefix={<DollarCircleOutlined />}
-            />
-          </Card>
-        </Col>
-      </Row>
-      <Card className="strategists-actions__modal__slider-card">
-        <Slider
-          defaultValue={ownership}
-          min={0}
-          max={strategy.maxOfferableOwnership}
-          onChangeComplete={(value) => setOwnership(value)}
-          tooltip={{
-            formatter: (value) => `${value}%`,
-          }}
-          autoFocus
-          marks={prepareSliderMarks(strategy)}
-        />
-        <Row justify="center">
-          <Space>
-            <InfoCircleOutlined />
-            Use this slider to adjust your investment offer.
-          </Space>
+  const content =
+    strategy && land ? (
+      <>
+        <LandStats land={land} />
+        <Row>
+          <Col span={12}>
+            <Card variant="borderless">
+              <Statistic
+                title={
+                  <Space>
+                    <PieChartOutlined />
+                    Proposed Ownership
+                  </Space>
+                }
+                value={ownership}
+                precision={0}
+                suffix={<PercentageOutlined />}
+              />
+            </Card>
+          </Col>
+          <Col span={12}>
+            <Card variant="borderless">
+              <Statistic
+                title={
+                  <Space>
+                    <WalletOutlined />
+                    Investment Cost
+                  </Space>
+                }
+                value={strategy.cost}
+                precision={2}
+                prefix={<DollarCircleOutlined />}
+              />
+            </Card>
+          </Col>
         </Row>
-      </Card>
-      <Collapse
-        bordered={false}
-        ghost
-        expandIconPosition="end"
-        items={[
-          {
-            key: '1',
-            label:
-              land.totalOwnership > 0 ? (
-                <Space>
-                  <SlidersOutlined />
-                  <span>Click to check {land.name}&apos;s investments</span>
-                </Space>
-              ) : (
-                <Space>
-                  <CheckCircleOutlined />
-                  <span>No investments in {land.name}!</span>
-                </Space>
+        <Card className="strategists-actions__modal__slider-card">
+          <Slider
+            defaultValue={ownership}
+            min={0}
+            max={strategy.maxOfferableOwnership}
+            onChangeComplete={(value) => setOwnership(value)}
+            tooltip={{
+              formatter: (value) => `${value}%`,
+            }}
+            autoFocus
+            marks={prepareSliderMarks(strategy)}
+          />
+          <Row justify="center">
+            <Space>
+              <InfoCircleOutlined />
+              Use this slider to adjust your investment offer.
+            </Space>
+          </Row>
+        </Card>
+        <Collapse
+          bordered={false}
+          ghost
+          expandIconPosition="end"
+          items={[
+            {
+              key: '1',
+              label:
+                land.totalOwnership > 0 ? (
+                  <Space>
+                    <SlidersOutlined />
+                    <span>Click to check {land.name}&apos;s investments</span>
+                  </Space>
+                ) : (
+                  <Space>
+                    <CheckCircleOutlined />
+                    <span>No investments in {land.name}!</span>
+                  </Space>
+                ),
+              children: (
+                <PortfolioTable perspective="land" playerLands={land.players} />
               ),
-            children: (
-              <PortfolioTable perspective="land" playerLands={land.players} />
-            ),
-          },
-        ]}
-      />
-    </>
-  );
+            },
+          ]}
+        />
+      </>
+    ) : (
+      <div className="strategists-actions__inline__empty">
+        No player or land selected yet.
+      </div>
+    );
 
   if (isInline) {
     return (
@@ -201,9 +211,15 @@ function PlayerInvestModal({
           <h3>Investment Strategy</h3>
         </header>
         {content}
-        <Row justify="space-between" wrap={false}>
+        <Row
+          justify="space-between"
+          wrap
+          align="middle"
+          className="strategists-inline-actions"
+        >
           <Space>
-            {strategy.maxOfferableOwnership !== strategy.availableOwnership ? (
+            {strategy &&
+            strategy.maxOfferableOwnership !== strategy.availableOwnership ? (
               <>
                 <ExclamationCircleOutlined />
                 <span>
@@ -219,7 +235,9 @@ function PlayerInvestModal({
             <Button onClick={onModalCancel}>Cancel</Button>
             <Button
               type="primary"
-              disabled={!strategy.feasible || investing}
+              disabled={
+                !strategy || !player?.turn || !strategy.feasible || investing
+              }
               icon={<RiseOutlined />}
               onClick={onInvest}
               loading={investing}
