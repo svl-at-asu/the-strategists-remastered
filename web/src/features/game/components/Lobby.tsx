@@ -15,7 +15,7 @@ import useGame from '@game/hooks/useGame';
 import { Player } from '@game/state';
 import useLogin from '@login/hooks/useLogin';
 
-function Lobby() {
+function Lobby({ showAlertOnly = false }: { showAlertOnly?: boolean }) {
   const { gameCode, player } = useLogin();
   const { state, sortedPlayers } = useGame();
 
@@ -23,6 +23,24 @@ function Lobby() {
     event.stopPropagation();
     axios.delete(`/api/games/${gameCode}/players`, { data: { playerId: id } });
   };
+
+  if (showAlertOnly) {
+    return state === 'LOBBY' ? (
+      <Row justify="center">
+        <Alert
+          type="info"
+          message={
+            <Space>
+              Use code <Tag icon={<UserAddOutlined />}>{gameCode}</Tag> to join
+              The Strategists.
+            </Space>
+          }
+          showIcon
+          banner
+        />
+      </Row>
+    ) : null;
+  }
 
   return (
     <div className="strategists-lobby">

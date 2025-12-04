@@ -1,11 +1,6 @@
-import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Collapse, Select, Space, Timeline } from 'antd';
-import {
-  BarsOutlined,
-  InfoCircleOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
+import { BarsOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import useNotifications from '@shared/hooks/useNotifications';
 import useActivities from '@activities/hooks/useActivities';
 import {
@@ -42,21 +37,14 @@ function Activities() {
     dispatch(subscribedTypesSetted(updateTypes));
   };
 
-  const SettingsIcon = useCallback(
-    (props: any) => <SettingOutlined rotate={props.isActive ? 90 : 0} />,
-    [],
-  );
-
   return (
     <div className="strategists-activity">
       <Collapse
         bordered={false}
         expandIconPosition="end"
-        accordion
-        expandIcon={SettingsIcon}
         items={[
           {
-            key: '1',
+            key: 'timeline-settings',
             label: (
               <Space>
                 <BarsOutlined />
