@@ -1,4 +1,4 @@
-import { Modal, Tabs } from 'antd';
+import { Col, Modal, Row, Tabs } from 'antd';
 import ChartInterpretationHelp from '@shared/components/ChartInterpretationHelp';
 import { Land, Player } from '@game/state';
 import PredictionsChart from '@predictions/components/PredictionsChart';
@@ -7,7 +7,7 @@ import LandStats from './LandStats';
 import PlayerStats from './PlayerStats';
 import PortfolioChart from './PortfolioChart';
 
-type PortfolioModalVariant = 'modal' | 'inline';
+type PortfolioModalVariant = 'modal' | 'inline' | 'horizontal-panel';
 
 export interface PortfolioModalProps {
   open: boolean;
@@ -25,6 +25,7 @@ function PortfolioModal({
   variant = 'modal',
 }: Partial<PortfolioModalProps>) {
   const isInline = variant === 'inline';
+  const isHorizontal = variant === 'horizontal-panel';
 
   // Inline panel ignores `open`, modal requires it
   if (!perspective) {
@@ -110,7 +111,54 @@ function PortfolioModal({
       </div>
     );
 
-  const content = isInline ? (
+  const HorizontalContent =
+    node && tabItems.length > 0 ? (
+      <Row
+        gutter={[16, 16]}
+        style={{
+          margin: 0,
+          width: '100%',
+        }}
+      >
+        {tabItems.map((item) => (
+          <Col
+            key={item.key}
+            xs={24}
+            sm={12}
+            md={8}
+            lg={8}
+            style={{
+              height: 350, // ✅ FIX: consistent height for G2 charts
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <section style={{ flex: 1 }}>
+              <div className="strategists-inline-label">{item.label}</div>
+
+              <div
+                style={{
+                  flex: 1,
+                  overflow: 'hidden', // prevent inner scroll
+                }}
+              >
+                {item.children}
+              </div>
+            </section>
+          </Col>
+        ))}
+      </Row>
+    ) : (
+      <div className="strategists-actions__inline__empty">
+        {perspective === 'land'
+          ? 'Select a land to view analysis.'
+          : 'Select a player to view analysis.'}
+      </div>
+    );
+
+  const content = isHorizontal ? (
+    HorizontalContent
+  ) : isInline ? (
     inlineContent
   ) : (
     <>
@@ -119,7 +167,7 @@ function PortfolioModal({
     </>
   );
 
-  if (isInline) {
+  if (isInline || isHorizontal) {
     return (
       <section className="strategists-actions strategists-actions__inline">
         <header className="strategists-actions__inline__header">

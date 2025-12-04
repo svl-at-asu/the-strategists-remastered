@@ -14,7 +14,8 @@ function MapPanel() {
     panelsConfig.PortfolioAnalysis.shown &&
     panelsConfig.PortfolioAnalysis.placement === 'default' &&
     clickedNode?.type === 'player';
-  const shouldRenderModal = showInvestmentModal || showPortfolioModal;
+  const showBottomPanel = panelsConfig.BottomPanel.shown;
+  const shouldRenderModal = showBottomPanel?false:(showInvestmentModal || showPortfolioModal);
   return (
     <>
       <MapTooltip />
