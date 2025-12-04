@@ -1,4 +1,5 @@
 import { Alert, Divider } from 'antd';
+import panelsConfig from '@game/hooks/panels';
 import useCytoscape from '@game/hooks/useCytoscape';
 import { Land, Player } from '@game/state';
 import LandStats from './LandStats';
@@ -6,6 +7,15 @@ import PlayerStats from './PlayerStats';
 
 function MapTooltip() {
   const { tooltipRef, hoveredNode, isTooltipHidden } = useCytoscape();
+  const showLandModalOnClick =
+    panelsConfig.InvestmentAnalysis.shown &&
+    panelsConfig.InvestmentAnalysis.placement === 'default';
+  const showPlayerModalOnClick =
+    panelsConfig.PortfolioAnalysis.shown &&
+    panelsConfig.PortfolioAnalysis.placement === 'default';
+  const showClickHint =
+    (hoveredNode?.type === 'land' && showLandModalOnClick) ||
+    (hoveredNode?.type === 'player' && showPlayerModalOnClick);
   return (
     <div
       ref={tooltipRef}
@@ -19,19 +29,21 @@ function MapTooltip() {
       ) : hoveredNode?.type === 'land' ? (
         <LandStats land={hoveredNode.value as Land} />
       ) : null}
-      <Divider>
-        <Alert
-          type="info"
-          message={
-            hoveredNode?.type === 'player'
-              ? `Click to check ${(hoveredNode.value as Player).username}'s portfolio.`
-              : hoveredNode?.type === 'land'
-                ? `Click to check ${(hoveredNode.value as Land).name}'s investments`
-                : null
-          }
-          banner
-        />
-      </Divider>
+      {showClickHint && (
+        <Divider>
+          <Alert
+            type="info"
+            message={
+              hoveredNode?.type === 'player'
+                ? `Click to check ${(hoveredNode.value as Player).username}'s portfolio.`
+                : hoveredNode?.type === 'land'
+                  ? `Click to check ${(hoveredNode.value as Land).name}'s investments`
+                  : null
+            }
+            banner
+          />
+        </Divider>
+      )}
     </div>
   );
 }
