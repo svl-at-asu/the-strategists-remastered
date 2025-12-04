@@ -10,9 +10,19 @@ import WinModal from './WinModal';
 import WinnerConfettiBackdrop from './WinnerConfettiBackdrop';
 
 function GamePage() {
-  const showRightPanel =
+  const showPlayerInvestInline =
     panelsConfig.PlayerInvestModal.shown &&
     panelsConfig.PlayerInvestModal.placement === 'right-panel';
+  const showInlineInvestmentAnalysis =
+    panelsConfig.InvestmentAnalysis.shown &&
+    panelsConfig.InvestmentAnalysis.placement === 'right-panel';
+  const showInlinePortfolioAnalysis =
+    panelsConfig.PortfolioAnalysis.shown &&
+    panelsConfig.PortfolioAnalysis.placement === 'right-panel';
+  const showRightPanel =
+    showPlayerInvestInline ||
+    showInlineInvestmentAnalysis ||
+    showInlinePortfolioAnalysis;
 
   return (
     <GameWrapper>
