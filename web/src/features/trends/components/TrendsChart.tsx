@@ -197,6 +197,7 @@ function TrendsChart(props: TrendsChartProps) {
               ? "The chart highlights the change in player's cash and net worth per turn."
               : "The chart highlights the change in the land's market value per turn."
           }
+          inline
         />
       )}
     </div>

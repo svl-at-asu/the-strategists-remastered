@@ -123,6 +123,7 @@ function PredictionsChart({ player, showHelp }: PredictionsChartProps) {
       {showHelp && (
         <ChartInterpretationHelp
           message={`The chart highlights the change in winning probabilities of ${player.username} compared to opponents per turn. A larger area represents a stark contrast in the chance of winning for any side.`}
+          inline
         />
       )}
     </div>

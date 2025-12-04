@@ -103,6 +103,7 @@ function PortfolioChart({
               ? "The chart highlights the player's investments across various properties. A larger circle represents a significant investment amount."
               : "The chart highlights the property's investors. A larger circle represents a significant investment amount by the investor."
           }
+          inline
         />
       )}
     </div>
