@@ -68,8 +68,8 @@ function CytoscapeProvider({ children }: PropsWithChildren) {
       // Creating cytoscape instance
       const newCy = cytoscape({
         autolock: true,
-        maxZoom: 1.5,
-        minZoom: 0.75,
+        maxZoom: 1.6,
+        minZoom: 0.5,
         layout: {
           name: 'preset',
         },
