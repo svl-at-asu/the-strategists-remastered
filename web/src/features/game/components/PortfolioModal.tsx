@@ -6,8 +6,9 @@ import TrendsChart from '@trends/components/TrendsChart';
 import LandStats from './LandStats';
 import PlayerStats from './PlayerStats';
 import PortfolioChart from './PortfolioChart';
+import panelsConfig, { PlayerActionSettings } from '@shared/configurations/panelsConifg';
 
-type PortfolioModalVariant = 'modal' | 'inline' | 'horizontal-panel';
+type PortfolioModalVariant = 'modal' | 'right-panel' | 'horizontal-panel';
 
 export interface PortfolioModalProps {
   open: boolean;
@@ -24,8 +25,35 @@ function PortfolioModal({
   node,
   variant = 'modal',
 }: Partial<PortfolioModalProps>) {
-  const isInline = variant === 'inline';
-  const isHorizontal = variant === 'horizontal-panel';
+  let isInline = variant == 'right-panel';
+  let isHorizontal = variant == 'horizontal-panel';
+
+  let showTrendsGraph = shouldShowPanel(
+    panelsConfig.TrendsGraph,
+    isHorizontal
+  );
+  let showPortfolioAnalysisGraph = shouldShowPanel(
+    panelsConfig.PortfolioAnalysisGraph,
+    isHorizontal
+  );
+  let showPredictionsGraph = shouldShowPanel(
+    panelsConfig.PredictionsGraph,
+    isHorizontal
+  );
+
+  function shouldShowPanel(panelConfig: PlayerActionSettings, isHorizontal: boolean) {
+    if (!panelConfig.shown) return false;
+    return isHorizontal?panelConfig.placement == 'bottom-panel'?true:false:panelConfig.placement == 'right-panel'?true:false;
+}
+
+
+  function shouldShowItem(itemLabel: string) {
+
+    if (itemLabel == 'Portfolio') return showPortfolioAnalysisGraph;
+    if (itemLabel == 'Trends') return showTrendsGraph;
+    if (itemLabel == 'Predictions') return showPredictionsGraph;
+    return false;
+  }
 
   // Inline panel ignores `open`, modal requires it
   if (!perspective) {
@@ -40,6 +68,7 @@ function PortfolioModal({
       ? (node as Land).players
       : (node as Player).lands
     : [];
+
   const getHelpMessage = (key: string) => {
     if (key === 'trends') {
       return perspective === 'player'
@@ -66,6 +95,7 @@ function PortfolioModal({
     {
       key: '1',
       label: labelWithHelp('Trends', 'trends'),
+      labelText: 'Trends',
       children: node ? (
         <TrendsChart perspective={perspective} id={node.id} />
       ) : null,
@@ -73,6 +103,7 @@ function PortfolioModal({
     {
       key: '2',
       label: labelWithHelp('Portfolio', 'portfolio'),
+      labelText: 'Portfolio',
       children: (
         <PortfolioChart perspective={perspective} playerLands={playerLands} />
       ),
@@ -83,6 +114,7 @@ function PortfolioModal({
   if (perspective === 'player' && node) {
     tabItems.push({
       key: '3',
+      labelText: 'Predictions',
       label: labelWithHelp('Predictions', 'predictions'),
       children: <PredictionsChart player={node as Player} />,
     });
@@ -95,11 +127,11 @@ function PortfolioModal({
       <PlayerStats player={node as Player} />
     );
 
-  const inlineContent =
+  let inlineContent =
     node && tabItems.length > 0 ? (
-      tabItems.map((item) => (
-        <section key={item.key}>
-          <div className="strategists-inline-label">{item.label}</div>
+      tabItems.map((item) => (shouldShowItem(item.labelText) && 
+        <section className={shouldShowItem(item.labelText) ? '' : 'hidden'} key={item.key}>
+          <div hidden={!shouldShowItem(item.labelText)} className="strategists-inline-label">{item.label}</div>
           {item.children}
         </section>
       ))
@@ -113,33 +145,27 @@ function PortfolioModal({
 
   const HorizontalContent =
     node && tabItems.length > 0 ? (
-      <Row
-        gutter={[16, 16]}
-        style={{
-          margin: 0,
-          width: '100%',
-        }}
-      >
+      <Row gutter={[16, 16]} style={{ margin: 0, width: '100%' }}>
         {tabItems.map((item) => (
           <Col
+            hidden={!shouldShowItem(item.labelText)}
             key={item.key}
             xs={24}
             sm={12}
             md={8}
             lg={8}
             style={{
-              height: 350, // ✅ FIX: consistent height for G2 charts
+              height: 350,
               display: 'flex',
               flexDirection: 'column',
             }}
           >
-            <section style={{ flex: 1 }}>
+            <section hidden={!shouldShowItem(item.labelText)} style={{ flex: 1 }}>
               <div className="strategists-inline-label">{item.label}</div>
-
               <div
                 style={{
                   flex: 1,
-                  overflow: 'hidden', // prevent inner scroll
+                  overflow: 'hidden',
                 }}
               >
                 {item.children}

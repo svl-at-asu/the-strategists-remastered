@@ -1,5 +1,5 @@
 import { Col, Row } from 'antd';
-import panelsConfig from '@game/hooks/panels';
+import panelsConfig from '@shared/configurations/panelsConifg';
 import CytoscapeProvider from '@game/providers/cytoscapeProvider';
 import GameWrapper from './GameWrapper';
 import MapPanel from './MapPanel';
@@ -11,20 +11,8 @@ import WinnerConfettiBackdrop from './WinnerConfettiBackdrop';
 import BottomPanel from './BottomPanel';
 
 function GamePage() {
-  const showPlayerInvestInline =
-    panelsConfig.PlayerInvestModal.shown &&
-    panelsConfig.PlayerInvestModal.placement === 'right-panel';
-  const showInlineInvestmentAnalysis =
-    panelsConfig.InvestmentAnalysis.shown &&
-    panelsConfig.InvestmentAnalysis.placement === 'right-panel';
-  const showInlinePortfolioAnalysis =
-    panelsConfig.PortfolioAnalysis.shown &&
-    panelsConfig.PortfolioAnalysis.placement === 'right-panel';
-  const showRightPanel =
-    showPlayerInvestInline ||
-    showInlineInvestmentAnalysis ||
-    showInlinePortfolioAnalysis;
-
+  
+  const showRightPanel = panelsConfig.RightPanel.shown;
   const showBottomPanel = panelsConfig.BottomPanel.shown;
 
   return (

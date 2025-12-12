@@ -1,5 +1,5 @@
 import { Alert, Divider } from 'antd';
-import panelsConfig from '@game/hooks/panels';
+import panelsConfig from '@shared/configurations/panelsConifg';
 import useCytoscape from '@game/hooks/useCytoscape';
 import { Land, Player } from '@game/state';
 import LandStats from './LandStats';
@@ -8,11 +8,11 @@ import PlayerStats from './PlayerStats';
 function MapTooltip() {
   const { tooltipRef, hoveredNode, isTooltipHidden } = useCytoscape();
   const showLandModalOnClick =
-    panelsConfig.InvestmentAnalysis.shown &&
-    panelsConfig.InvestmentAnalysis.placement === 'default';
+    panelsConfig.PortfolioAnalysisGraph.shown &&
+    panelsConfig.PortfolioAnalysisGraph.placement === 'default';
   const showPlayerModalOnClick =
-    panelsConfig.PortfolioAnalysis.shown &&
-    panelsConfig.PortfolioAnalysis.placement === 'default';
+    panelsConfig.PredictionsGraph.shown &&
+    panelsConfig.PredictionsGraph.placement === 'default';
   const showClickHint =
     (hoveredNode?.type === 'land' && showLandModalOnClick) ||
     (hoveredNode?.type === 'player' && showPlayerModalOnClick);

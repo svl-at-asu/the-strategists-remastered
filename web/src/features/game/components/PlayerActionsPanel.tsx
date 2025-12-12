@@ -10,7 +10,7 @@ import {
 } from '@ant-design/icons';
 import axios from 'axios';
 import useNotifications from '@shared/hooks/useNotifications';
-import panelsConfig from '@game/hooks/panels';
+import panelsConfig from '@shared/configurations/panelsConifg';
 import useGame from '@game/hooks/useGame';
 import InvestmentStrategy from '@game/utils/InvestmentStrategy';
 import useLogin from '@login/hooks/useLogin';

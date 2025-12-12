@@ -1,4 +1,4 @@
-import panelsConfig from '@game/hooks/panels';
+import panelsConfig from '@shared/configurations/panelsConifg';
 import useCytoscape from '@game/hooks/useCytoscape';
 import MapTooltip from './MapTooltip';
 import PortfolioModal from './PortfolioModal';
@@ -7,12 +7,12 @@ function MapPanel() {
   const { cytoscapeContainerRef, clickedNode, clearClickedNode } =
     useCytoscape();
   const showInvestmentModal =
-    panelsConfig.InvestmentAnalysis.shown &&
-    panelsConfig.InvestmentAnalysis.placement === 'default' &&
+    panelsConfig.PortfolioAnalysisGraph.shown &&
+    panelsConfig.PortfolioAnalysisGraph.placement === 'default' &&
     clickedNode?.type === 'land';
   const showPortfolioModal =
-    panelsConfig.PortfolioAnalysis.shown &&
-    panelsConfig.PortfolioAnalysis.placement === 'default' &&
+    panelsConfig.PredictionsGraph.shown &&
+    panelsConfig.PredictionsGraph.placement === 'default' &&
     clickedNode?.type === 'player';
   const showBottomPanel = panelsConfig.BottomPanel.shown;
   const shouldRenderModal = showBottomPanel?false:(showInvestmentModal || showPortfolioModal);

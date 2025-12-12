@@ -1,5 +1,4 @@
 import { Row, Typography } from 'antd';
-import { Land, Player } from '@game/state';
 import useLogin from '@login/hooks/useLogin';
 import useCytoscape from '@game/hooks/useCytoscape';
 import PortfolioModal from './PortfolioModal';

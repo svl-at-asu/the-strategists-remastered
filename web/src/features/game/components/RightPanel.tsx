@@ -1,4 +1,4 @@
-import panelsConfig from '@game/hooks/panels';
+import panelsConfig from '@shared/configurations/panelsConifg';
 import useGame from '@game/hooks/useGame';
 import useLogin from '@login/hooks/useLogin';
 import PlayerInvestModal from './PlayerInvestModal';
@@ -10,38 +10,34 @@ function RightPanel() {
   const showPlayerInvestInline =
     panelsConfig.PlayerInvestModal.shown &&
     panelsConfig.PlayerInvestModal.placement === 'right-panel';
-  const showInvestmentAnalysisInline =
-    panelsConfig.InvestmentAnalysis.shown &&
-    panelsConfig.InvestmentAnalysis.placement === 'right-panel';
-  const showPortfolioAnalysisInline =
-    panelsConfig.PortfolioAnalysis.shown &&
-    panelsConfig.PortfolioAnalysis.placement === 'right-panel';
+    
   const landNode = player ? lands[player.index] : null;
   const portfolioNode = player ?? null;
 
   // If config doesn't place anything on the right panel, skip rendering the container
-  if (
-    !showPlayerInvestInline &&
-    !showInvestmentAnalysisInline &&
-    !showPortfolioAnalysisInline
-  ) {
-    return null;
-  }
+  // if (
+  //   !showPlayerInvestInline &&
+  //   !showInvestmentAnalysisInline &&
+  //   !showPortfolioAnalysisInline
+  // ) {
+  //   return null;
+  // }
+  
 
   return (
     <section className="strategists-analysis-panel">
       {showPlayerInvestInline && <PlayerInvestModal variant="inline" />}
-      {showInvestmentAnalysisInline && (
+      {landNode && (
         <PortfolioModal
-          variant="inline"
+          variant="right-panel"
           perspective="land"
           node={landNode}
           open
         />
       )}
-      {showPortfolioAnalysisInline && (
+      {portfolioNode && (
         <PortfolioModal
-          variant="inline"
+          variant="right-panel"
           perspective="player"
           node={portfolioNode}
           open
